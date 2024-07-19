@@ -43,7 +43,9 @@ dashboard_import:
   package_import_url: github://Shubhranshu2411/LILYGO-T-Higrow-Esphome/LILYGO-T-Higrow-ESP32.yaml@main
 
 esp32:
-  board: lolin_d32
+  board: esp32dev
+  framework:
+    type: arduino
 
 improv_serial:
 
