@@ -82,6 +82,14 @@ api:
 ota:
   - platform: esphome
 
+  - platform: github
+    github_owner: Shubhranshu2411  # Your GitHub username
+    github_repo: LILYGO-T-Higrow-Esphome  # Your GitHub repository name
+    # Specify the branch where the firmware is published
+    github_branch: main
+    # Specify the path to the firmware file
+    github_path: lilygo-esp32/lilygo-esp32.ota.bin  # Firmware file name
+
 # Sets up Bluetooth LE (Only on ESP32) to allow the user
 # to provision wifi credentials to the device.
 esp32_improv:
