@@ -89,7 +89,15 @@ ota:
     github_branch: main
     # Specify the path to the firmware file
     github_path: lilygo-esp32/lilygo-esp32.ota.bin  # Firmware file name
-
+switch:
+  # Auto Update Switch
+  - platform: template
+    name: "Auto Update"
+    id: auto_update_switch
+    turn_on_action:
+      - lambda: id(ota_github).auto_update = true;
+    turn_off_action:
+      - lambda: id(ota_github).auto_update = false;
 # Sets up Bluetooth LE (Only on ESP32) to allow the user
 # to provision wifi credentials to the device.
 esp32_improv:
