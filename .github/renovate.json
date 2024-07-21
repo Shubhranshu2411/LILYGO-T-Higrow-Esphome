@@ -6,7 +6,7 @@
 	"extends": ["config:base"],
 	"assigneesFromCodeOwners": true,
 	"ignoreDeps": [],
-	"timezone": "Europe/Amsterdam",
+	"timezone": "Asia/Kolkata",
 	"includeForks": true,
 	"dependencyDashboard": false
 }
