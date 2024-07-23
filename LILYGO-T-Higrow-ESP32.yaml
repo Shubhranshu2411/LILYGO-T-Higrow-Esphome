@@ -105,7 +105,7 @@ http_request:
   useragent: esphome
   timeout: 10s
   verify_ssl: false
-  
+
 esp32_improv:
   authorizer: none
 
@@ -138,9 +138,9 @@ switch:
     name: "Auto Update"
     id: auto_update_switch
     turn_on_action:
-      - lambda: id(ota_github).auto_update = true;
+      - lambda: id(ota_http_request).enabled = true;
     turn_off_action:
-      - lambda: id(ota_github).auto_update = false;
+      - lambda: id(ota_http_request).enabled = false;
 
 sensor:
   # Wifi sensor

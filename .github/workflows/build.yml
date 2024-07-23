@@ -7,7 +7,7 @@ on:
       esphome_version:
         description: 'ESPHome version'
         required: true
-        default: '2024.6.0'
+        default: '2024.7.1'
 
 jobs:
   build:
