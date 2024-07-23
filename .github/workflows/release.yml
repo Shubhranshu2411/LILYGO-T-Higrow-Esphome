@@ -1,0 +1,24 @@
+---
+# .github/workflows/release.yml
+name: Create a new release
+
+on:
+  workflow_dispatch:
+    inputs:
+      firmware_version:
+        description: 'Firmware version'
+        required: true
+        default: '1.0.0'
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4.1.7
+
+      - uses: actions/create-release@v1
+        with:
+          tag_name: ${{ inputs.firmware_version }}
+          release_name: Firmware Release ${{ inputs.firmware_version }}
+          body: |
+            New firmware release!

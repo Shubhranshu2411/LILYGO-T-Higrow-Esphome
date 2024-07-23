@@ -1,36 +1,98 @@
 ---
-name: Build and publish
+name: Build and publish firmware
 
-on: #[push] # yamllint disable-line rule:truthy
+on:
   workflow_dispatch:
+    inputs:                         # Comment if automatic ESPHOME version is enabled
+      esphome_version:
+        description: 'ESPHome version'
+        required: true
+        default: '2024.6.0'
 
 jobs:
   build:
     name: Building ${{ matrix.file }}
     runs-on: ubuntu-latest
-    if: needs.pr-check.outputs.number != 'null'
     strategy:
       matrix:
         file:
           - LILYGO-T-Higrow-ESP32.yaml
     steps:
       - name: Checkout source code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.1.7
       - name: yaml-lint
         uses: ibiqlik/action-yamllint@v3
         with:
           config_file: .github/yamllint.yml
+      # - name: Get latest ESPHome version
+      #   uses: actions/cache@v3
+      #   with:
+      #       path: ~/.esphomerc
+      #       key: esphome-versions-${{ runner.os }}-${{ hashFiles('pyproject.toml') }}
+      # - run: |
+      #     echo "latest_version=$(esphome --version | cut -d' ' -f3)" >> $HOME/.esphomerc
       - name: Build ESPHome firmware to verify configuration
         uses: esphome/build-action@v3.2.0
+        id: esphome-build
         with:
           yaml_file: ${{ matrix.file }}
-  publish:
+          version: ${{ inputs.esphome_version }}
+          # version: ${{ cat $HOME/.esphomerc | grep latest_version | cut -d'=' -f2 }}
+
+      - run: |
+          mkdir output
+          mv "${{ steps.esphome-build.outputs.name }}" output/
+
+      - uses: actions/upload-artifact@v4.3.3
+        with:
+          name: firmware
+          path: output
+
+  publish-test:
     needs: build
-    name: Publish firmware
-    # uses: bruvv/workflows/.github/workflows/publish.yml@main
-    uses: Shubhranshu2411/LILYGO-T-Higrow-Esphome/.github/workflows/publish.yml@main
-    with:
-      files: LILYGO-T-Higrow-ESP32.yaml
-      name: ESPHome Plant monitor
-      manifest_filename: lilygo-t-higrow-manifest.json
-      clean: false
+    name: Publish test firmware
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4.1.7
+      - uses: actions/download-artifact@v4.1.7
+        with:
+          path: output
+          name: firmware
+
+      - run: |
+          mkdir output-test
+          cp output/* output-test/
+
+      - uses: JamesIves/github-pages-deploy-action@v4.6.1
+        with:
+          branch: gh-pages-test
+          folder: output-test
+          clean: true
+
+  release:
+    needs: build
+    name: Release firmware
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4.1.7
+      - uses: actions/download-artifact@v4.1.7
+        with:
+          path: output
+          name: firmware
+
+      - run: |
+          mkdir output-release
+          cp output/* output-release/
+
+      - uses: JamesIves/github-pages-deploy-action@v4.6.1
+        with:
+          branch: gh-pages-release
+          folder: output-release
+          clean: true
+
+      - uses: actions/create-release@v1
+        with:
+          tag_name: ${{ github.sha }}
+          release_name: Firmware Release ${{ github.sha }}
+          body: |
+            New firmware release!

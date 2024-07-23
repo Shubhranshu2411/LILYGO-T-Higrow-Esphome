@@ -81,22 +81,18 @@ api:
 # Allow Over-The-Air updates
 ota:
   - platform: esphome
-
-  - platform: github
-    github_owner: Shubhranshu2411  # Your GitHub username
-    github_repo: LILYGO-T-Higrow-Esphome  # Your GitHub repository name
-    # Specify the branch where the firmware is published
-    github_branch: main
-    # Specify the path to the firmware file
-    github_path: lilygo-esp32/lilygo-esp32.ota.bin  # Firmware file name
-
-
-ota:
-  - platform: esphome
     id: ota_esphome
+
   - platform: http_request
     id: ota_http_request
 
+ota:
+  enabled: ${ota_enabled}
+  url: https://github.com/your-username/your-repo-name/raw/main/firmware/${device_name}.bin
+  username: !secret ota_username
+  password: !secret ota_password
+
+  
 update:
   - platform: http_request
     id: update_http_request
