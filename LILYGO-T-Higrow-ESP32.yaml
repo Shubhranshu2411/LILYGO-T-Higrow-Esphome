@@ -85,6 +85,7 @@ ota:
 
   - platform: http_request
     id: ota_http_request
+    verify_ssl: false
 
 # ota:
 #   enabled: ${ota_enabled}
@@ -98,7 +99,7 @@ update:
     id: update_http_request
     name: Firmware
     source: https://github.com/Shubhranshu2411/LILYGO-T-Higrow-Esphome/lilygo-esp32/manifest.json@gh-pages-release
-    verify_ssl: false
+    
 
 http_request:
 
