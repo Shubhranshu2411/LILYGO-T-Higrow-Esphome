@@ -73,6 +73,7 @@ jobs:
     needs: build
     name: Release firmware
     runs-on: ubuntu-latest
+    permissions: write-all
     steps:
       - uses: actions/checkout@v4.1.7
       - uses: actions/download-artifact@v4.1.7
@@ -96,4 +97,4 @@ jobs:
           release_name: Firmware Release ${{ github.sha }}
           body: |
             New firmware release!
-          token: ${{ secrets.MY_TOKEN }}
+          
