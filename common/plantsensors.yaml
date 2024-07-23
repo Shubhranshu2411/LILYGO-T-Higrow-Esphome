@@ -7,7 +7,8 @@ sensor:
     id: ${devicename}_moisture
     icon: 'mdi:watering-can'
     update_interval: ${update_interval}
-    attenuation: 11db
+    # attenuation: 11db
+    attenuation: 12db
     accuracy_decimals: 2 # comment for calibration
     unit_of_measurement: '%' # comment for calibration
     device_class: 'moisture'
