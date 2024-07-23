@@ -90,10 +90,10 @@ jobs:
           folder: output-release
           clean: true
 
-      - uses: actions/create-release@v1
-        env:
-          GH_TOKEN: ${{ github.token }}
+      - name: Create GitHub Release
+        uses: actions/create-release@v1.1.4
         with:
+          github_token: ${{ secrets.MY_TOKEN }}
           tag_name: ${{ github.sha }}
           release_name: Firmware Release ${{ github.sha }}
           body: |
