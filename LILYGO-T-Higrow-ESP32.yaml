@@ -86,13 +86,13 @@ ota:
   - platform: http_request
     id: ota_http_request
 
-ota:
-  enabled: ${ota_enabled}
-  url: https://github.com/your-username/your-repo-name/raw/main/firmware/${device_name}.bin
-  username: !secret ota_username
-  password: !secret ota_password
+# ota:
+#   enabled: ${ota_enabled}
+#   url: https://github.com/your-username/your-repo-name/raw/main/firmware/${device_name}.bin
+#   username: !secret ota_username
+#   password: !secret ota_password
 
-  
+
 update:
   - platform: http_request
     id: update_http_request
