@@ -97,7 +97,7 @@ update:
   - platform: http_request
     id: update_http_request
     name: Firmware
-    source: https://github.com/Shubhranshu2411/LILYGO-T-Higrow-Esphome/lilygo-esp32/manifest.json
+    source: https://github.com/Shubhranshu2411/LILYGO-T-Higrow-Esphome/lilygo-esp32/manifest.json@gh-pages-release
 
 http_request:
 
