@@ -96,3 +96,4 @@ jobs:
           release_name: Firmware Release ${{ github.sha }}
           body: |
             New firmware release!
+          token: ${{ secrets.MY_TOKEN }}
