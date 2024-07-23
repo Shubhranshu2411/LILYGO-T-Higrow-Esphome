@@ -61,7 +61,7 @@ jobs:
 
       - run: |
           mkdir output-test
-          cp output/* output-test/
+          cp -r output/* output-test/
 
       - uses: JamesIves/github-pages-deploy-action@v4.6.1
         with:
@@ -82,7 +82,7 @@ jobs:
 
       - run: |
           mkdir output-release
-          cp output/* output-release/
+          cp -r output/* output-release/
 
       - uses: JamesIves/github-pages-deploy-action@v4.6.1
         with:
