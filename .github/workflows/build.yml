@@ -73,33 +73,33 @@ jobs:
           folder: output-test
           clean: true
 
-  release:
-    needs: build
-    name: Release firmware
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4.1.7
-      - uses: actions/download-artifact@v4.1.7
-        with:
-          path: output
-          name: firmware
+  # release:
+  #   needs: build
+  #   name: Release firmware
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v4.1.7
+  #     - uses: actions/download-artifact@v4.1.7
+  #       with:
+  #         path: output
+  #         name: firmware
 
-      - run: |
-          mkdir output-release
-          cp -r output/* output-release/
+  #     - run: |
+  #         mkdir output-release
+  #         cp -r output/* output-release/
 
-      - uses: JamesIves/github-pages-deploy-action@v4.6.1
-        with:
-          branch: gh-pages-release
-          folder: output-release
-          clean: true
+  #     - uses: JamesIves/github-pages-deploy-action@v4.6.1
+  #       with:
+  #         branch: gh-pages-release
+  #         folder: output-release
+  #         clean: true
 
-      - name: Create GitHub Release
-        uses: shogo82148/actions-create-release@v1
-        # env:
-        #   github_token: ${{ secrets.MY_TOKEN }}
-        with:
-          tag_name: ${{ github.sha }}
-          release_name: Firmware Release ${{ github.sha }}
-          body: |
-            New firmware release!
+  #     - name: Create GitHub Release
+  #       uses: shogo82148/actions-create-release@v1
+  #       # env:
+  #       #   github_token: ${{ secrets.MY_TOKEN }}
+  #       with:
+  #         tag_name: ${{ github.sha }}
+  #         release_name: Firmware Release ${{ github.sha }}
+  #         body: |
+  #           New firmware release!

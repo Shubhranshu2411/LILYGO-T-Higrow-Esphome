@@ -1,27 +1,57 @@
 ---
 # .github/workflows/release.yml
-name: Create a new release
+name: Create a new build and release
 
 on:
   workflow_dispatch:
     inputs:
+      esphome_version:
+        description: 'ESPHome version'
+        required: true
+        default: '2024.7.1'
       firmware_version:
         description: 'Firmware version'
         required: true
         default: 'latest'
 
 jobs:
-  create-release:
+  build:
+    name: Building ${{ matrix.file }}
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        file:
+          - LILYGO-T-Higrow-ESP32.yaml
     steps:
-      - uses: actions/checkout@v4.1.7
-      - uses: actions/download-artifact@v4.1.7
+      - name: Checkout source code
+        uses: actions/checkout@v4.1.7
+      - name: yaml-lint
+        uses: ibiqlik/action-yamllint@v3
         with:
-          path: output
+          config_file: .github/yamllint.yml
+      # - name: Get latest ESPHome version
+      #   uses: actions/cache@v3
+      #   with:
+      #       path: ~/.esphomerc
+      #       key: esphome-versions-${{ runner.os }}-${{ hashFiles('pyproject.toml') }}
+      # - run: |
+      #     echo "latest_version=$(esphome --version | cut -d' ' -f3)" >> $HOME/.esphomerc
+      - name: Build ESPHome firmware to verify configuration
+        uses: esphome/build-action@v3.2.0
+        id: esphome-build
+        with:
+          yaml_file: ${{ matrix.file }}
+          version: ${{ inputs.esphome_version }}
+          # version: ${{ cat $HOME/.esphomerc | grep latest_version | cut -d'=' -f2 }}
+        
+      - run: |
+          mkdir output
+          mv "${{ steps.esphome-build.outputs.name }}" output/
+
+      - uses: actions/upload-artifact@v4.3.3
+        with:
           name: firmware
-          # Specify the build workflow name and job name to download the latest artifact
-          # workflow: Build and publish firmware
-          # job: build
+          path: output
 
       - run: |
           mkdir output-release
