@@ -95,8 +95,6 @@ jobs:
           clean: true
 
       - uses: actions/create-release@v1
-        env:
-          github_token: ${{ secrets.MY_TOKEN }}
         with:
           tag_name: ${{ github.sha }}
           release_name: Firmware Release ${{ github.sha }}
