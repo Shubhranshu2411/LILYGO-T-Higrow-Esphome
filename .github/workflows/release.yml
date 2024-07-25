@@ -8,17 +8,38 @@ on:
       firmware_version:
         description: 'Firmware version'
         required: true
-        default: '1.0.0'
+        default: 'latest'
 
 jobs:
   create-release:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4.1.7
-
-      - uses: actions/create-release@v1
+      - uses: actions/download-artifact@v4.1.7
         with:
-          tag_name: ${{ inputs.firmware_version }}
-          release_name: Firmware Release ${{ inputs.firmware_version }}
-          body: |
-            New firmware release!
+          path: output
+          name: firmware
+          # Specify the build workflow name and job name to download the latest artifact
+          # workflow: Build and publish firmware
+          # job: build
+
+      - run: |
+          mkdir output-release
+          cp -r output/* output-release/
+
+      - uses: JamesIves/github-pages-deploy-action@v4.6.1
+        with:
+          branch: gh-pages-release
+          folder: output-release
+          clean: true
+        
+      - name: Create GitHub Release
+        uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.MY_TOKEN }}"
+          automatic_release_tag: "latest"
+          prerelease: true
+          title: "Development Build"
+          files: |
+            manifest.json
+            *.bin
