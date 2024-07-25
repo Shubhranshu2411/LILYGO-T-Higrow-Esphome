@@ -95,7 +95,7 @@ jobs:
           clean: true
 
       - name: Create GitHub Release
-        uses: actions/create-release@v1.1.4
+        uses: shogo82148/actions-create-release@v1
         # env:
         #   github_token: ${{ secrets.MY_TOKEN }}
         with:
@@ -103,4 +103,3 @@ jobs:
           release_name: Firmware Release ${{ github.sha }}
           body: |
             New firmware release!
-          token: ${{ secrets.MY_TOKEN }}
