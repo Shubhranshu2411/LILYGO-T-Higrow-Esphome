@@ -66,7 +66,7 @@ jobs:
       - run: |
           mkdir output-release
           cp -r output/* output-release/
-          cp -R static/* ooutput-release/
+          cp -R static/* output-release/
       - uses: JamesIves/github-pages-deploy-action@v4.6.1
         with:
           branch: gh-pages-release
