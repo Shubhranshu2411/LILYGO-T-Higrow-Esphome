@@ -94,7 +94,7 @@ jobs:
       - name: Create single manifest.json
         run: |
           PROJECT_VERSION=$(yq e '.project.version' LILYGO-T-Higrow-ESP32.yaml)
-          jq -s '{"name": "${{ inputs.name }}", "version": "${{ PROJECT_VERSION }}", "home_assistant_domain": "esphome", "new_install_skip_erase": false, "builds":.}' output/*/manifest.json > output/${{ inputs.manifest_filename }}
+          jq -s "{\"name\": \"${{ inputs.name }}\", \"version\": \"$PROJECT_VERSION\", \"home_assistant_domain\": \"esphome\", \"new_install_skip_erase\": false, \"builds\":.}" output/*/manifest.json > output/${{ inputs.manifest_filename }}
       - run: |
           mkdir output-test
           cp -r output/* output-test/
