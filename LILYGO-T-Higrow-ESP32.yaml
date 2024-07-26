@@ -85,7 +85,7 @@ ota:
 
   - platform: http_request
     id: ota_http_request
-    
+    password: !MY_TOKEN ota_password
 
 # ota:
 #   enabled: ${ota_enabled}
@@ -93,18 +93,65 @@ ota:
 #   username: !secret ota_username
 #   password: !secret ota_password
 
-
-update:
-  - platform: http_request
-    id: update_http_request
-    name: Firmware
-    source: https://github.com/Shubhranshu2411/LILYGO-T-Higrow-Esphome/lilygo-esp32/manifest.json@gh-pages-release
+# update:
+#   - platform: http_request
+#     id: update_http_request
+#     name: Firmware
+#     source: https://github.com/Shubhranshu2411/LILYGO-T-Higrow-Esphome/lilygo-esp32/manifest.json@gh-pages-release
     
 
 http_request:
   useragent: esphome
   timeout: 10s
   verify_ssl: false
+
+globals:
+  - id: current_version
+    type: std::string
+    restore_value: yes
+    initial_value: '"1.0.0"'
+  - id: update_available
+    type: bool
+    restore_value: no
+    initial_value: 'false'
+
+interval:
+  - interval: 1h
+    then:
+      - http_request.get:
+          url: "https://raw.githubusercontent.com/Shubhranshu2411/LILYGO-T-Higrow-Esphome/gh-pages-test/lilygo-t-higrow-manifest.json?token=${github_token}"
+          headers:
+            Authorization: "token ${github_token}"
+          on_response:
+            then:
+              - lambda: |-
+                  // Parse the JSON response and extract the version
+                  id(update_available) = false;
+                  if (x.containsKey("version")) {
+                    std::string new_version = x["version"].as<std::string>();
+                    if (new_version != id(current_version)) {
+                      id(update_available) = true;
+                    }
+                  }
+              - if:
+                  condition:
+                    lambda: 'return id(update_available);'
+                  then:
+                    - logger.log: "New firmware version available. Starting OTA update..."
+                    - ota:
+                        url: "https://raw.githubusercontent.com/username/repository/main/path/to/firmware.bin?token=${github_token}"
+binary_sensor:
+  - platform: gpio
+    pin: GPIO0
+    name: "Button"
+    on_press:
+      - if:
+          condition:
+            lambda: 'return id(update_available);'
+          then:
+            - logger.log: "Button pressed. Starting OTA update..."
+            - ota:
+                url: "https://github.com/Shubhranshu2411/LILYGO-T-Higrow-Esphome/blob/gh-pages-test/lilygo-esp32/lilygo-esp32.ota.bin?token=${github_token}"
 
 esp32_improv:
   authorizer: none
