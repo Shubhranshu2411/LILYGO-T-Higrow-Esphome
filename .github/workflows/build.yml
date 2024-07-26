@@ -1,26 +1,54 @@
 ---
-name: Build and publish firmware
+name: Build and publish lilygo firmware
 
 on:
   workflow_dispatch:
     inputs:                         # Comment if automatic ESPHOME version is enabled
+      files:
+        description: Comma-separated list of files to build.
+        required: true
+        type: string  
+      name:
+        description: Name of the firmware to publish.
+        required: false
+        type: string
+        default: ESPHome
+      manifest_filename:
+        description: Filename of the manifest to write.
+        required: false
+        type: string
+        default: manifest.json
       esphome_version:
         description: 'ESPHome version'
-        required: true
-        default: '2024.7.1'
+        required: false
+        type: string
+        default: latest
       # publish_type:
       #   description: 'Publish Type (Test/Release)'
       #   required: true
       #   default: 'test'
 
 jobs:
-  build:
-    name: Building ${{ matrix.file }}
+  prepare:
     runs-on: ubuntu-latest
+    outputs:
+      files: ${{ steps.files-array.outputs.files }}
+    steps:
+      - id: files-array
+        run: |
+          files=$(echo "${{ inputs.files }}" | jq -Rcn 'inputs | . / ","')
+          echo ::set-output name=files::$files
+  build:
+    name: Build ESPHome binary for ${{ matrix.file }}
+    needs: [prepare]
+    runs-on: ubuntu-latest
+    if: needs.pr-check.outputs.number != 'null'
     strategy:
       matrix:
         file:
           - LILYGO-T-Higrow-ESP32.yaml
+    outputs:
+            esphome-version: ${{ steps.esphome-build.outputs.esphome-version }}
     steps:
       - name: Checkout source code
         uses: actions/checkout@v4.1.7
@@ -49,28 +77,32 @@ jobs:
 
       - uses: actions/upload-artifact@v4.3.3
         with:
-          name: firmware
+          name: ${{ inputs.name }}
           path: output
 
   publish-test:
     needs: build
-    name: Publish test firmware
+    name: Publish new test firmware
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4.1.7
       - uses: actions/download-artifact@v4.1.7
         with:
           path: output
-          name: firmware
+          name: ${{ inputs.name }}
 
+      - name: Create single manifest.json
+        run: |
+          jq -s '{"name": "${{ inputs.name }}", "version": "${{ needs.build.outputs.esphome-version }}", "home_assistant_domain": "esphome", "new_install_skip_erase": false, "builds":.}' output/*/manifest.json > output/${{ inputs.manifest_filename }}
       - run: |
           mkdir output-test
           cp -r output/* output-test/
 
-      - uses: JamesIves/github-pages-deploy-action@v4.6.1
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@v4.6.1
         with:
           branch: gh-pages-test
-          folder: output-test
+          folder: output/${{ steps.esphome-build.outputs.name }}  # Use the firmware file name
           clean: true
 
   # release:
