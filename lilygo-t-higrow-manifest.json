@@ -8,7 +8,7 @@
       "chipFamily": "ESP32",
       "ota": {
         "path": "lilygo-esp32/lilygo-esp32.ota.bin",
-        "md5": "64749267ea0c3cc25b4580ebd5b17b8d"
+        "md5": "59682cafc08c6937e1ebb6303f1763e6"
       },
       "parts": [
         {
