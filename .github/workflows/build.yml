@@ -3,7 +3,7 @@ name: Build and publish lilygo firmware
 
 on:
   workflow_dispatch:
-    inputs:                         # Comment if automatic ESPHOME version is enabled
+    inputs:         # Comment if automatic ESPHOME version is enabled
       # files:
       #   description: Comma-separated list of files to build.
       #   required: true
@@ -17,7 +17,7 @@ on:
         description: Filename of the manifest to write.
         required: false
         type: string
-        default: manifest.json
+        default: lilygo-t-higrow-manifest.json
       esphome_version:
         description: 'ESPHome version'
         required: false
@@ -104,34 +104,3 @@ jobs:
           branch: gh-pages-test
           folder: output/${{ steps.esphome-build.outputs.name }}  # Use the firmware file name
           clean: true
-
-  # release:
-  #   needs: build
-  #   name: Release firmware
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v4.1.7
-  #     - uses: actions/download-artifact@v4.1.7
-  #       with:
-  #         path: output
-  #         name: firmware
-
-  #     - run: |
-  #         mkdir output-release
-  #         cp -r output/* output-release/
-
-  #     - uses: JamesIves/github-pages-deploy-action@v4.6.1
-  #       with:
-  #         branch: gh-pages-release
-  #         folder: output-release
-  #         clean: true
-
-  #     - name: Create GitHub Release
-  #       uses: shogo82148/actions-create-release@v1
-  #       # env:
-  #       #   github_token: ${{ secrets.MY_TOKEN }}
-  #       with:
-  #         tag_name: ${{ github.sha }}
-  #         release_name: Firmware Release ${{ github.sha }}
-  #         body: |
-  #           New firmware release!
