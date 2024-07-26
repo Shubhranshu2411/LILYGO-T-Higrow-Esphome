@@ -1,0 +1,13 @@
+{
+  "chipFamily": "ESP32",
+  "ota": {
+    "path": "lilygo-esp32/lilygo-esp32.ota.bin",
+    "md5": "64749267ea0c3cc25b4580ebd5b17b8d"
+  },
+  "parts": [
+    {
+      "path": "lilygo-esp32/lilygo-esp32.factory.bin",
+      "offset": 0
+    }
+  ]
+}
