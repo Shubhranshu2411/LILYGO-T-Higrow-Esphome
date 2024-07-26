@@ -4,10 +4,10 @@ name: Build and publish lilygo firmware
 on:
   workflow_dispatch:
     inputs:                         # Comment if automatic ESPHOME version is enabled
-      files:
-        description: Comma-separated list of files to build.
-        required: true
-        type: string  
+      # files:
+      #   description: Comma-separated list of files to build.
+      #   required: true
+      #   type: string  
       name:
         description: Name of the firmware to publish.
         required: false
