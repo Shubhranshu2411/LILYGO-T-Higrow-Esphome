@@ -48,7 +48,7 @@ jobs:
         file:
           - LILYGO-T-Higrow-ESP32.yaml
     outputs:
-            esphome-version: ${{ steps.esphome-build.outputs.esphome-version }}
+      esphome-version: ${{ steps.esphome-build.outputs.esphome-version }}
     steps:
       - name: Checkout source code
         uses: actions/checkout@v4.1.7
